@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Settings, CheckSquare, Ticket } from "lucide-react";
+import { Menu, X, Settings, CheckSquare, Ticket, Search } from "lucide-react";
 import type { Me } from "@/lib/queries/me";
 import type { RoomListItem } from "@/lib/queries/me";
 import { useLocale } from "@/lib/i18n/locale-context";
+import { SearchDialog } from "@/components/search/search-dialog";
 import { cn } from "@/lib/utils";
 
 export function TopBar({
@@ -18,7 +19,20 @@ export function TopBar({
 }) {
   const { t, toggleLocale } = useLocale();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const pathname = usePathname();
+
+  // Cmd+K / Ctrl+K shortcut
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
 
   return (
     <>
@@ -39,6 +53,17 @@ export function TopBar({
           </span>
         </div>
         <div className="flex items-center gap-3">
+          {/* Search button */}
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="flex items-center gap-2 rounded-md border border-input bg-background px-2.5 py-1 text-xs text-muted-foreground hover:bg-accent"
+          >
+            <Search className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">{t("search.placeholder")}</span>
+            <kbd className="hidden rounded border bg-muted px-1 py-0.5 font-mono text-[10px] sm:inline">
+              ⌘K
+            </kbd>
+          </button>
           <button
             onClick={toggleLocale}
             className="rounded-md border border-input bg-background px-2 py-1 text-xs font-medium hover:bg-accent"
@@ -145,6 +170,8 @@ export function TopBar({
           </aside>
         </div>
       )}
+
+      <SearchDialog open={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
 }

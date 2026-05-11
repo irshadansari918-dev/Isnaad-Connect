@@ -104,6 +104,16 @@ const strings = {
   "agent.viewTask": { en: "View task", ar: "عرض المهمة" },
   "agent.thinking": { en: "Sanad is thinking…", ar: "سند يفكر…" },
 
+  // Search
+  "search.placeholder": { en: "Search…", ar: "بحث…" },
+  "search.all": { en: "All", ar: "الكل" },
+  "search.messages": { en: "Messages", ar: "الرسائل" },
+  "search.tasks": { en: "Tasks", ar: "المهام" },
+  "search.tickets": { en: "Tickets", ar: "التذاكر" },
+  "search.noResults": { en: "No results found.", ar: "لم يتم العثور على نتائج." },
+  "search.hint": { en: "Type at least 2 characters to search.", ar: "اكتب حرفين على الأقل للبحث." },
+  "search.close": { en: "to close", ar: "للإغلاق" },
+
   // Notifications
   "notifications.enable": { en: "Enable notifications", ar: "تفعيل الإشعارات" },
   "notifications.description": { en: "Get notified about new messages and updates.", ar: "احصل على إشعارات بالرسائل والتحديثات الجديدة." },
