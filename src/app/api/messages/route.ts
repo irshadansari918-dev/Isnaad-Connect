@@ -103,7 +103,7 @@ export async function GET(request: NextRequest) {
   let query = supabase
     .from("messages")
     .select(
-      "id, room_id, sender_id, kind, body, metadata, created_at, users!inner(id, full_name, role, is_ai)",
+      "id, room_id, sender_id, kind, body, metadata, created_at, reply_to_id, edited_at, deleted_at, users!inner(id, full_name, role, is_ai)",
     )
     .eq("room_id", roomId)
     .order("created_at", { ascending: false })

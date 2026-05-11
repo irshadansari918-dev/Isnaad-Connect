@@ -88,7 +88,7 @@ export async function getInitialMessages(
   const { data, error } = await supabase
     .from("messages")
     .select(
-      "id, room_id, sender_id, kind, body, metadata, created_at, users!inner(id, full_name, role, is_ai)",
+      "id, room_id, sender_id, kind, body, metadata, created_at, reply_to_id, edited_at, deleted_at, users!inner(id, full_name, role, is_ai)",
     )
     .eq("room_id", roomId)
     .order("created_at", { ascending: false })
@@ -104,6 +104,9 @@ export async function getInitialMessages(
     body: string | null;
     metadata: Record<string, unknown>;
     created_at: string;
+    reply_to_id: string | null;
+    edited_at: string | null;
+    deleted_at: string | null;
     users: { id: string; full_name: string; role: string; is_ai: boolean };
   };
 
@@ -117,6 +120,9 @@ export async function getInitialMessages(
       body: row.body,
       metadata: row.metadata,
       created_at: row.created_at,
+      reply_to_id: row.reply_to_id,
+      edited_at: row.edited_at,
+      deleted_at: row.deleted_at,
       sender: {
         id: row.users.id,
         full_name: row.users.full_name,

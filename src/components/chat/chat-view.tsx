@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMessages } from "@/lib/realtime/use-messages";
 import { useReadTracking } from "@/lib/realtime/use-read-tracking";
 import { MessageBubble } from "./message-bubble";
@@ -23,13 +23,18 @@ type Props = {
 };
 
 export function ChatView({ room, initialMessages, currentUserId, userRole = "client" }: Props) {
-  const { messages, sendMessage, sending, loadMore, loadingMore, hasMore } =
+  const { messages, sendMessage, sending, loadMore, loadingMore, hasMore, setCurrentUser } =
     useMessages(room.id, initialMessages);
   const [replyTo, setReplyTo] = useState<ReplyState>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const prevLengthRef = useRef(initialMessages.length);
   const { t } = useLocale();
+
+  // Enable optimistic sends by providing current user info
+  useEffect(() => {
+    setCurrentUser(currentUserId);
+  }, [currentUserId, setCurrentUser]);
 
   // Mark latest message as read
   const latestMessageId = messages.length > 0 ? messages[messages.length - 1].id : null;
