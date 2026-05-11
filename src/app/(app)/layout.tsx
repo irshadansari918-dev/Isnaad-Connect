@@ -17,9 +17,9 @@ export default async function AppLayout({
   return (
     <AppProviders>
       <div className="flex min-h-screen flex-col">
-        <TopBar me={me} />
+        <TopBar me={me} rooms={rooms} />
         <div className="flex flex-1 overflow-hidden">
-          <Sidebar rooms={rooms} />
+          <Sidebar rooms={rooms} isAdmin={me.role === "admin"} />
           <main className="flex-1 overflow-hidden bg-background">{children}</main>
         </div>
       </div>

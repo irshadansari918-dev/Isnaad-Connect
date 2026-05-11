@@ -28,6 +28,40 @@ const strings = {
   "role.internal": { en: "Internal", ar: "داخلي" },
   "role.client": { en: "Client", ar: "عميل" },
 
+  // Admin
+  "admin.title": { en: "Administration", ar: "الإدارة" },
+  "admin.organizations": { en: "Organizations", ar: "المنظمات" },
+  "admin.users": { en: "Users", ar: "المستخدمون" },
+  "admin.rooms": { en: "Rooms", ar: "الغرف" },
+  "admin.create": { en: "Create", ar: "إنشاء" },
+  "admin.name": { en: "Name", ar: "الاسم" },
+  "admin.email": { en: "Email", ar: "البريد الإلكتروني" },
+  "admin.role": { en: "Role", ar: "الدور" },
+  "admin.status": { en: "Status", ar: "الحالة" },
+  "admin.actions": { en: "Actions", ar: "الإجراءات" },
+  "admin.active": { en: "Active", ar: "نشط" },
+  "admin.archived": { en: "Archived", ar: "مؤرشف" },
+  "admin.deactivated": { en: "Deactivated", ar: "معطل" },
+  "admin.archive": { en: "Archive", ar: "أرشفة" },
+  "admin.restore": { en: "Restore", ar: "استعادة" },
+  "admin.invite": { en: "Send Invite", ar: "إرسال دعوة" },
+  "admin.deactivate": { en: "Deactivate", ar: "تعطيل" },
+  "admin.reactivate": { en: "Reactivate", ar: "إعادة تفعيل" },
+  "admin.kind": { en: "Type", ar: "النوع" },
+  "admin.members": { en: "Members", ar: "الأعضاء" },
+  "admin.organization": { en: "Organization", ar: "المنظمة" },
+  "admin.fullName": { en: "Full Name", ar: "الاسم الكامل" },
+  "admin.password": { en: "Password", ar: "كلمة المرور" },
+  "admin.optional": { en: "Optional", ar: "اختياري" },
+  "admin.selectOrg": { en: "Select organization", ar: "اختر المنظمة" },
+  "admin.selectMembers": { en: "Select members", ar: "اختر الأعضاء" },
+  "admin.clientOrg": { en: "Client Organization", ar: "منظمة العميل" },
+  "admin.noData": { en: "No data yet.", ar: "لا توجد بيانات بعد." },
+  "admin.created": { en: "Created", ar: "تم الإنشاء" },
+
+  // Navigation
+  "nav.admin": { en: "Admin", ar: "الإدارة" },
+
   // Language toggle
   "lang.toggle": { en: "عربي", ar: "English" },
 } as const;

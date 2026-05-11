@@ -2,10 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Settings } from "lucide-react";
 import { useLocale } from "@/lib/i18n/locale-context";
+import { cn } from "@/lib/utils";
 import type { RoomListItem } from "@/lib/queries/me";
 
-export function Sidebar({ rooms }: { rooms: RoomListItem[] }) {
+export function Sidebar({
+  rooms,
+  isAdmin = false,
+}: {
+  rooms: RoomListItem[];
+  isAdmin?: boolean;
+}) {
   const pathname = usePathname();
   const { t } = useLocale();
 
@@ -29,11 +37,12 @@ export function Sidebar({ rooms }: { rooms: RoomListItem[] }) {
                 <li key={r.id}>
                   <Link
                     href={`/rooms/${r.id}`}
-                    className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors ${
+                    className={cn(
+                      "flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors",
                       isActive
                         ? "bg-accent font-medium text-accent-foreground"
-                        : "text-foreground hover:bg-accent/50"
-                    }`}
+                        : "text-foreground hover:bg-accent/50",
+                    )}
                   >
                     <span className="text-muted-foreground">
                       {r.kind === "client"
@@ -50,6 +59,23 @@ export function Sidebar({ rooms }: { rooms: RoomListItem[] }) {
           </ul>
         )}
       </nav>
+
+      {isAdmin && (
+        <div className="border-t px-2 py-2">
+          <Link
+            href="/admin/organizations"
+            className={cn(
+              "flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors",
+              pathname.startsWith("/admin")
+                ? "bg-accent font-medium text-accent-foreground"
+                : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+            )}
+          >
+            <Settings className="h-3.5 w-3.5" />
+            <span>{t("nav.admin")}</span>
+          </Link>
+        </div>
+      )}
     </aside>
   );
 }
