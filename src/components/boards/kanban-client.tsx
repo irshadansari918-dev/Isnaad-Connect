@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowLeft, GripVertical, Plus, User, Calendar } from "lucide-react";
+import { ArrowLeft, GripVertical, Plus, User, Calendar, Tag } from "lucide-react";
 import { useLocale } from "@/lib/i18n/locale-context";
 import { cn } from "@/lib/utils";
 import type { UserRow } from "@/lib/queries/admin";
@@ -11,6 +11,12 @@ type Column = {
   id: string;
   name: string;
   position: number;
+  color: string;
+};
+
+type Label = {
+  id: string;
+  name: string;
   color: string;
 };
 
@@ -25,6 +31,7 @@ type Task = {
   position: number;
   created_at: string;
   users: { full_name: string } | null;
+  labels?: Label[];
 };
 
 type Board = {
@@ -196,6 +203,20 @@ export function KanbanClient({ boardId, currentUserId, userRole, staffUsers }: P
                       <div className="flex items-start gap-1.5">
                         <GripVertical className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground/40 opacity-0 group-hover:opacity-100" />
                         <div className="min-w-0 flex-1">
+                          {/* Labels */}
+                          {task.labels && task.labels.length > 0 && (
+                            <div className="mb-1.5 flex flex-wrap gap-1">
+                              {task.labels.map((label) => (
+                                <span
+                                  key={label.id}
+                                  className="rounded-full px-1.5 py-0.5 text-[9px] font-medium text-white"
+                                  style={{ backgroundColor: label.color }}
+                                >
+                                  {label.name}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                           <p className={cn(
                             "text-xs font-medium",
                             task.status === "done" && "line-through text-muted-foreground",

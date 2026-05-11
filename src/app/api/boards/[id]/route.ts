@@ -29,10 +29,10 @@ export async function GET(_request: NextRequest, { params }: Props) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  // Load tasks for this board
+  // Load tasks for this board with labels
   const { data: tasks } = await supabase
     .from("tasks")
-    .select("id, title, description, status, due_at, assignee_id, column_id, position, created_at, users!tasks_assignee_id_fkey(full_name)")
+    .select("id, title, description, status, due_at, assignee_id, column_id, position, created_at, users!tasks_assignee_id_fkey(full_name), task_label_assignments(label_id, task_labels!inner(id, name, color))")
     .eq("board_id", id)
     .order("position");
 
@@ -40,9 +40,16 @@ export async function GET(_request: NextRequest, { params }: Props) {
   const columns = ((board.task_columns as { id: string; name: string; position: number; color: string }[]) ?? [])
     .sort((a, b) => a.position - b.position);
 
+  // Flatten labels on tasks
+  type LabelAssignment = { label_id: string; task_labels: { id: string; name: string; color: string } };
+  const enrichedTasks = (tasks ?? []).map((t) => ({
+    ...t,
+    labels: ((t.task_label_assignments as unknown as LabelAssignment[]) ?? []).map((a) => a.task_labels),
+  }));
+
   return NextResponse.json({
     board: { ...board, task_columns: columns },
-    tasks: tasks ?? [],
+    tasks: enrichedTasks,
   });
 }
 

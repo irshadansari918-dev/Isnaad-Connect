@@ -147,6 +147,8 @@ const strings = {
   "boards.addTask": { en: "Add task", ar: "إضافة مهمة" },
   "boards.taskTitle": { en: "Task title…", ar: "عنوان المهمة…" },
   "boards.add": { en: "Add", ar: "إضافة" },
+  "boards.labels": { en: "Labels", ar: "التصنيفات" },
+  "boards.newLabel": { en: "New Label", ar: "تصنيف جديد" },
 
   // Navigation
   "nav.admin": { en: "Admin", ar: "الإدارة" },
