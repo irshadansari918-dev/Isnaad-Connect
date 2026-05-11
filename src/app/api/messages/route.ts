@@ -43,6 +43,23 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Trigger Sanad AI if message contains @sanad (case-insensitive)
+  if (/@sanad\b/i.test(messageBody)) {
+    // Fire-and-forget: call agent endpoint asynchronously
+    const origin = request.nextUrl.origin;
+    fetch(`${origin}/api/agent/respond`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: request.headers.get("cookie") ?? "",
+      },
+      body: JSON.stringify({
+        room_id,
+        trigger_message_id: message.id,
+      }),
+    }).catch((err) => console.error("Agent trigger failed:", err));
+  }
+
   return NextResponse.json({ message }, { status: 201 });
 }
 

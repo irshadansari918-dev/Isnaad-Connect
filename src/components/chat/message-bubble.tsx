@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { AiConfirmCard } from "./ai-confirm-card";
 import type { MessageRow } from "@/lib/queries/room";
 
 type Props = {
@@ -33,6 +34,7 @@ const roleBadgeColor: Record<string, string> = {
 export function MessageBubble({ message, isOwn, showSender }: Props) {
   const isAi = message.sender.is_ai;
   const isSystem = message.kind === "system";
+  const hasAction = isAi && typeof message.metadata?.action_type === "string";
 
   // System messages render as centered text
   if (isSystem) {
@@ -112,6 +114,20 @@ export function MessageBubble({ message, isOwn, showSender }: Props) {
           )}
         >
           <p className="whitespace-pre-wrap break-words">{message.body}</p>
+          {hasAction && (
+            <AiConfirmCard
+              messageId={message.id}
+              metadata={
+                message.metadata as {
+                  action_type: string;
+                  action_input: Record<string, unknown>;
+                  status: "pending" | "confirmed" | "cancelled";
+                  result_id?: string;
+                  result_number?: string;
+                }
+              }
+            />
+          )}
         </div>
 
         <span

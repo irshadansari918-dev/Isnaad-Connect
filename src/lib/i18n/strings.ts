@@ -93,6 +93,14 @@ const strings = {
   "tickets.description": { en: "Description", ar: "الوصف" },
   "tickets.noTickets": { en: "No tickets yet.", ar: "لا توجد تذاكر بعد." },
 
+  // Agent (Sanad)
+  "agent.confirm": { en: "Confirm", ar: "تأكيد" },
+  "agent.cancel": { en: "Cancel", ar: "إلغاء" },
+  "agent.confirmed": { en: "Action confirmed", ar: "تم التأكيد" },
+  "agent.cancelled": { en: "Action cancelled", ar: "تم الإلغاء" },
+  "agent.viewTask": { en: "View task", ar: "عرض المهمة" },
+  "agent.thinking": { en: "Sanad is thinking…", ar: "سند يفكر…" },
+
   // Navigation
   "nav.admin": { en: "Admin", ar: "الإدارة" },
   "nav.tasks": { en: "Tasks", ar: "المهام" },

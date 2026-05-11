@@ -13,6 +13,7 @@
     "smoke:all": "npm run smoke:tenant && npm run smoke:messaging"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.95.1",
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.105.4",
     "class-variance-authority": "^0.7.1",
