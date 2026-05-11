@@ -17,9 +17,11 @@ type Props = {
   roomId: string;
   replyTo?: ReplyState;
   onCancelReply?: () => void;
+  onTyping?: () => void;
+  onStopTyping?: () => void;
 };
 
-export function Composer({ onSend, sending, roomId, replyTo, onCancelReply }: Props) {
+export function Composer({ onSend, sending, roomId, replyTo, onCancelReply, onTyping, onStopTyping }: Props) {
   const [text, setText] = useState("");
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<{ file: File; url: string } | null>(null);
@@ -35,6 +37,7 @@ export function Composer({ onSend, sending, roomId, replyTo, onCancelReply }: Pr
     const trimmed = text.trim();
     if (!trimmed || sending) return;
     setText("");
+    onStopTyping?.();
     await onSend(trimmed, replyTo?.messageId ?? null);
     onCancelReply?.();
     inputRef.current?.focus();
@@ -180,7 +183,7 @@ export function Composer({ onSend, sending, roomId, replyTo, onCancelReply }: Pr
         <textarea
           ref={inputRef}
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => { setText(e.target.value); onTyping?.(); }}
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}
           placeholder={t("chat.sendMessage")}

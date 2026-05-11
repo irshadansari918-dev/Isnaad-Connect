@@ -19,6 +19,9 @@ const strings = {
   "chat.attach": { en: "Attach file", ar: "إرفاق ملف" },
   "chat.image": { en: "Send image", ar: "إرسال صورة" },
   "chat.uploading": { en: "Uploading…", ar: "جاري الرفع…" },
+  "chat.typing": { en: "is typing…", ar: "يكتب…" },
+  "chat.typingPlural": { en: "are typing…", ar: "يكتبون…" },
+  "chat.searchInRoom": { en: "Search in room…", ar: "بحث في الغرفة…" },
 
   // Message actions
   "message.reply": { en: "Reply", ar: "رد" },

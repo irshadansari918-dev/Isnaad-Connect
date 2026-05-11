@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Search, X } from "lucide-react";
 import { useMessages } from "@/lib/realtime/use-messages";
 import { useReadTracking } from "@/lib/realtime/use-read-tracking";
+import { useTyping } from "@/lib/realtime/use-typing";
 import { MessageBubble } from "./message-bubble";
 import { Composer } from "./composer";
 import { ReadReceipts } from "./read-receipts";
@@ -26,10 +28,15 @@ export function ChatView({ room, initialMessages, currentUserId, userRole = "cli
   const { messages, sendMessage, sending, loadMore, loadingMore, hasMore, setCurrentUser } =
     useMessages(room.id, initialMessages);
   const [replyTo, setReplyTo] = useState<ReplyState>(null);
+  const [roomSearch, setRoomSearch] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const prevLengthRef = useRef(initialMessages.length);
   const { t } = useLocale();
+
+  // Resolve current user's name from room members
+  const currentUserName = room.members.find((m) => m.userId === currentUserId)?.fullName ?? "User";
+  const { typingUsers, startTyping, stopTyping } = useTyping(room.id, currentUserId, currentUserName);
 
   // Enable optimistic sends by providing current user info
   useEffect(() => {
@@ -78,6 +85,13 @@ export function ChatView({ room, initialMessages, currentUserId, userRole = "cli
     return () => el.removeEventListener("scroll", handleScroll);
   }, [hasMore, loadingMore, loadMore]);
 
+  // In-room search: compute matching message IDs
+  const searchTerm = roomSearch.trim().toLowerCase();
+  const searchMatchIds = useMemo(() => {
+    if (searchTerm.length < 2) return null;
+    return new Set(messages.filter((m) => m.body?.toLowerCase().includes(searchTerm)).map((m) => m.id));
+  }, [searchTerm, messages]);
+
   return (
     <div className="flex h-full flex-col">
       {/* Room header */}
@@ -88,7 +102,32 @@ export function ChatView({ room, initialMessages, currentUserId, userRole = "cli
             {room.members.filter((m) => !m.isAi).length} {t("chat.members")}
           </p>
         </div>
-        <RoomKindBadge kind={room.kind} />
+        <div className="flex items-center gap-2">
+          {roomSearch !== "" ? (
+            <div className="flex items-center gap-1 rounded-md border bg-background px-2 py-1">
+              <Search className="h-3.5 w-3.5 text-muted-foreground" />
+              <input
+                value={roomSearch}
+                onChange={(e) => setRoomSearch(e.target.value)}
+                placeholder={t("chat.searchInRoom")}
+                className="w-32 bg-transparent text-xs outline-none"
+                autoFocus
+              />
+              <button onClick={() => setRoomSearch("")} className="rounded p-0.5 hover:bg-accent">
+                <X className="h-3 w-3" />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setRoomSearch(" ")}
+              className="rounded-md p-1.5 hover:bg-accent"
+              title={t("chat.searchInRoom")}
+            >
+              <Search className="h-4 w-4 text-muted-foreground" />
+            </button>
+          )}
+          <RoomKindBadge kind={room.kind} />
+        </div>
       </div>
 
       {/* Messages area */}
@@ -125,8 +164,12 @@ export function ChatView({ room, initialMessages, currentUserId, userRole = "cli
                 }
               }
 
+              const isSearchMatch = searchMatchIds?.has(msg.id) ?? false;
+              // If searching, dim non-matching messages
+              const dimmed = searchMatchIds !== null && !isSearchMatch;
+
               return (
-                <div key={msg.id}>
+                <div key={msg.id} className={dimmed ? "opacity-30" : ""}>
                   {showDate && <DateSeparator date={msg.created_at} t={t} />}
                   <MessageBubble
                     message={msg}
@@ -134,6 +177,7 @@ export function ChatView({ room, initialMessages, currentUserId, userRole = "cli
                     isAdmin={userRole === "admin"}
                     showSender={showSender || showDate}
                     replyPreview={replyPreview}
+                    highlight={isSearchMatch}
                     onReply={(id) => {
                       const m = messages.find((x) => x.id === id);
                       if (m) setReplyTo({ messageId: id, senderName: m.sender.full_name, body: m.body ?? "" });
@@ -166,6 +210,17 @@ export function ChatView({ room, initialMessages, currentUserId, userRole = "cli
         <div ref={bottomRef} />
       </div>
 
+      {/* Typing indicator */}
+      {typingUsers.length > 0 && (
+        <div className="px-4 py-1">
+          <p className="text-xs text-muted-foreground animate-pulse">
+            {typingUsers.length === 1
+              ? `${typingUsers[0].fullName} ${t("chat.typing")}`
+              : `${typingUsers.map((u) => u.fullName).join(", ")} ${t("chat.typingPlural")}`}
+          </p>
+        </div>
+      )}
+
       {/* Composer */}
       <Composer
         onSend={sendMessage}
@@ -173,6 +228,8 @@ export function ChatView({ room, initialMessages, currentUserId, userRole = "cli
         roomId={room.id}
         replyTo={replyTo}
         onCancelReply={() => setReplyTo(null)}
+        onTyping={startTyping}
+        onStopTyping={stopTyping}
       />
     </div>
   );

@@ -13,6 +13,7 @@ type Props = {
   isAdmin?: boolean;
   showSender: boolean;
   replyPreview?: { senderName: string; body: string } | null;
+  highlight?: boolean;
   onReply?: (messageId: string) => void;
   onEdit?: (messageId: string) => void;
   onDelete?: (messageId: string) => void;
@@ -51,6 +52,7 @@ export function MessageBubble({
   isAdmin = false,
   showSender,
   replyPreview,
+  highlight = false,
   onReply,
   onEdit,
   onDelete,
@@ -95,6 +97,7 @@ export function MessageBubble({
         "group/bubble flex gap-2",
         isOwn ? "flex-row-reverse" : "flex-row",
         showSender ? "mt-3" : "mt-0.5",
+        highlight && "rounded-lg bg-yellow-100/50 dark:bg-yellow-900/20 ring-1 ring-yellow-300/50",
       )}
     >
       {/* Avatar */}
