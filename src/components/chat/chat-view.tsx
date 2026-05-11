@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useMessages } from "@/lib/realtime/use-messages";
 import { useReadTracking } from "@/lib/realtime/use-read-tracking";
 import { MessageBubble } from "./message-bubble";
@@ -8,15 +8,23 @@ import { Composer } from "./composer";
 import { useLocale } from "@/lib/i18n/locale-context";
 import type { MessageRow, RoomDetail } from "@/lib/queries/room";
 
+type ReplyState = {
+  messageId: string;
+  senderName: string;
+  body: string;
+} | null;
+
 type Props = {
   room: RoomDetail;
   initialMessages: MessageRow[];
   currentUserId: string;
+  userRole?: string;
 };
 
-export function ChatView({ room, initialMessages, currentUserId }: Props) {
+export function ChatView({ room, initialMessages, currentUserId, userRole = "client" }: Props) {
   const { messages, sendMessage, sending, loadMore, loadingMore, hasMore } =
     useMessages(room.id, initialMessages);
+  const [replyTo, setReplyTo] = useState<ReplyState>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const prevLengthRef = useRef(initialMessages.length);
@@ -99,13 +107,46 @@ export function ChatView({ room, initialMessages, currentUserId }: Props) {
               const showSender = !prev || prev.sender_id !== msg.sender_id;
               const showDate = !prev || !isSameDay(prev.created_at, msg.created_at);
 
+              // Resolve reply preview
+              let replyPreview = null;
+              if (msg.reply_to_id) {
+                const parent = messages.find((m) => m.id === msg.reply_to_id);
+                if (parent) {
+                  replyPreview = {
+                    senderName: parent.sender.full_name,
+                    body: parent.body ?? "",
+                  };
+                }
+              }
+
               return (
                 <div key={msg.id}>
                   {showDate && <DateSeparator date={msg.created_at} t={t} />}
                   <MessageBubble
                     message={msg}
                     isOwn={msg.sender_id === currentUserId}
+                    isAdmin={userRole === "admin"}
                     showSender={showSender || showDate}
+                    replyPreview={replyPreview}
+                    onReply={(id) => {
+                      const m = messages.find((x) => x.id === id);
+                      if (m) setReplyTo({ messageId: id, senderName: m.sender.full_name, body: m.body ?? "" });
+                    }}
+                    onEdit={async (id) => {
+                      const newBody = prompt("Edit message:");
+                      if (newBody !== null && newBody.trim()) {
+                        await fetch(`/api/messages/${id}`, {
+                          method: "PATCH",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ body: newBody.trim() }),
+                        });
+                      }
+                    }}
+                    onDelete={async (id) => {
+                      if (confirm("Delete this message?")) {
+                        await fetch(`/api/messages/${id}`, { method: "DELETE" });
+                      }
+                    }}
                   />
                 </div>
               );
@@ -116,7 +157,13 @@ export function ChatView({ room, initialMessages, currentUserId }: Props) {
       </div>
 
       {/* Composer */}
-      <Composer onSend={sendMessage} sending={sending} roomId={room.id} />
+      <Composer
+        onSend={sendMessage}
+        sending={sending}
+        roomId={room.id}
+        replyTo={replyTo}
+        onCancelReply={() => setReplyTo(null)}
+      />
     </div>
   );
 }

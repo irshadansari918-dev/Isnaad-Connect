@@ -3,12 +3,19 @@
 import { FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AiConfirmCard } from "./ai-confirm-card";
+import { ReactionBar } from "./reaction-bar";
+import { MessageActions } from "./message-actions";
 import type { MessageRow } from "@/lib/queries/room";
 
 type Props = {
   message: MessageRow;
   isOwn: boolean;
-  showSender: boolean; // false when consecutive messages from same sender
+  isAdmin?: boolean;
+  showSender: boolean;
+  replyPreview?: { senderName: string; body: string } | null;
+  onReply?: (messageId: string) => void;
+  onEdit?: (messageId: string) => void;
+  onDelete?: (messageId: string) => void;
 };
 
 function formatFileSize(bytes: number): string {
@@ -38,9 +45,19 @@ const roleBadgeColor: Record<string, string> = {
   client: "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300",
 };
 
-export function MessageBubble({ message, isOwn, showSender }: Props) {
+export function MessageBubble({
+  message,
+  isOwn,
+  isAdmin = false,
+  showSender,
+  replyPreview,
+  onReply,
+  onEdit,
+  onDelete,
+}: Props) {
   const isAi = message.sender.is_ai;
   const isSystem = message.kind === "system";
+  const isDeleted = !!message.deleted_at;
   const hasAction = isAi && typeof message.metadata?.action_type === "string";
 
   // System messages render as centered text
@@ -54,10 +71,28 @@ export function MessageBubble({ message, isOwn, showSender }: Props) {
     );
   }
 
+  // Deleted messages
+  if (isDeleted) {
+    return (
+      <div
+        className={cn(
+          "flex gap-2",
+          isOwn ? "flex-row-reverse" : "flex-row",
+          showSender ? "mt-3" : "mt-0.5",
+        )}
+      >
+        {showSender ? <div className="h-8 w-8 shrink-0" /> : <div className="w-8 shrink-0" />}
+        <p className="py-1 text-xs italic text-muted-foreground">
+          This message was deleted
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div
       className={cn(
-        "flex gap-2",
+        "group/bubble flex gap-2",
         isOwn ? "flex-row-reverse" : "flex-row",
         showSender ? "mt-3" : "mt-0.5",
       )}
@@ -81,7 +116,29 @@ export function MessageBubble({ message, isOwn, showSender }: Props) {
       )}
 
       {/* Bubble */}
-      <div className={cn("max-w-[75%] min-w-0", isOwn ? "items-end" : "items-start")}>
+      <div className={cn("max-w-[75%] min-w-0 relative", isOwn ? "items-end" : "items-start")}>
+        {/* Actions menu (appears on hover) */}
+        {onReply && (
+          <div className={cn("absolute top-0 z-10", isOwn ? "start-0 -translate-x-full pe-1" : "end-0 translate-x-full ps-1")}>
+            <MessageActions
+              messageId={message.id}
+              isOwn={isOwn}
+              isAdmin={isAdmin}
+              canEdit={isOwn && message.kind === "text"}
+              onReply={() => onReply(message.id)}
+              onEdit={() => onEdit?.(message.id)}
+              onDelete={() => onDelete?.(message.id)}
+            />
+          </div>
+        )}
+        {/* Reply preview */}
+        {replyPreview && (
+          <div className={cn("mb-1 rounded-md border-s-2 border-blue-400 bg-muted/50 px-2 py-1 text-xs", isOwn ? "text-right" : "")}>
+            <span className="font-semibold">{replyPreview.senderName}</span>
+            <p className="truncate text-muted-foreground">{replyPreview.body}</p>
+          </div>
+        )}
+
         {showSender && (
           <div
             className={cn(
@@ -175,14 +232,18 @@ export function MessageBubble({ message, isOwn, showSender }: Props) {
           )}
         </div>
 
-        <span
+        <div
           className={cn(
-            "mt-0.5 block text-[10px] text-muted-foreground",
-            isOwn ? "text-right" : "text-left",
+            "mt-0.5 flex items-center gap-1.5 text-[10px] text-muted-foreground",
+            isOwn ? "flex-row-reverse" : "flex-row",
           )}
         >
-          {formatTime(message.created_at)}
-        </span>
+          <span>{formatTime(message.created_at)}</span>
+          {message.edited_at && <span className="italic">(edited)</span>}
+        </div>
+
+        {/* Reactions */}
+        {!isAi && <ReactionBar messageId={message.id} />}
       </div>
     </div>
   );

@@ -24,6 +24,9 @@ export type MessageRow = {
   body: string | null;
   metadata: Record<string, unknown>;
   created_at: string;
+  reply_to_id?: string | null;
+  edited_at?: string | null;
+  deleted_at?: string | null;
   sender: {
     id: string;
     full_name: string;

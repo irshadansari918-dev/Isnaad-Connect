@@ -5,13 +5,21 @@ import { Image as ImageIcon, Paperclip, Send, X, Loader2 } from "lucide-react";
 import { useLocale } from "@/lib/i18n/locale-context";
 import { cn } from "@/lib/utils";
 
+type ReplyState = {
+  messageId: string;
+  senderName: string;
+  body: string;
+} | null;
+
 type Props = {
-  onSend: (body: string) => Promise<void>;
+  onSend: (body: string, replyToId?: string | null) => Promise<void>;
   sending: boolean;
   roomId: string;
+  replyTo?: ReplyState;
+  onCancelReply?: () => void;
 };
 
-export function Composer({ onSend, sending, roomId }: Props) {
+export function Composer({ onSend, sending, roomId, replyTo, onCancelReply }: Props) {
   const [text, setText] = useState("");
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<{ file: File; url: string } | null>(null);
@@ -27,7 +35,8 @@ export function Composer({ onSend, sending, roomId }: Props) {
     const trimmed = text.trim();
     if (!trimmed || sending) return;
     setText("");
-    await onSend(trimmed);
+    await onSend(trimmed, replyTo?.messageId ?? null);
+    onCancelReply?.();
     inputRef.current?.focus();
   };
 
@@ -97,6 +106,19 @@ export function Composer({ onSend, sending, roomId }: Props) {
       onDrop={handleDrop}
       onDragOver={handleDragOver}
     >
+      {/* Reply preview */}
+      {replyTo && (
+        <div className="mb-2 flex items-center gap-2 rounded-md border-s-2 border-blue-400 bg-muted/50 px-3 py-2">
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold">{replyTo.senderName}</p>
+            <p className="truncate text-xs text-muted-foreground">{replyTo.body}</p>
+          </div>
+          <button onClick={onCancelReply} className="shrink-0 rounded-md p-1 hover:bg-accent">
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      )}
+
       {/* Image preview */}
       {preview && (
         <div className="mb-2 flex items-start gap-2">

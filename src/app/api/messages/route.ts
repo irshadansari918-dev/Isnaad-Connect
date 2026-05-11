@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { room_id, body: messageBody, kind = "text" } = body;
+  const { room_id, body: messageBody, kind = "text", reply_to_id = null } = body;
 
   if (!room_id || typeof room_id !== "string") {
     return NextResponse.json({ error: "room_id is required" }, { status: 400 });
@@ -26,15 +26,20 @@ export async function POST(request: NextRequest) {
   }
 
   // RLS ensures the user can only insert into rooms they are a member of.
+  const insertData: Record<string, unknown> = {
+    room_id,
+    sender_id: user.id,
+    kind,
+    body: messageBody.trim(),
+  };
+  if (reply_to_id && typeof reply_to_id === "string") {
+    insertData.reply_to_id = reply_to_id;
+  }
+
   const { data: message, error } = await supabase
     .from("messages")
-    .insert({
-      room_id,
-      sender_id: user.id,
-      kind,
-      body: messageBody.trim(),
-    })
-    .select("id, room_id, sender_id, kind, body, metadata, created_at")
+    .insert(insertData)
+    .select("id, room_id, sender_id, kind, body, metadata, created_at, reply_to_id")
     .single();
 
   if (error) {

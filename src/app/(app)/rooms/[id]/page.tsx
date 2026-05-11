@@ -23,6 +23,7 @@ export default async function RoomPage({ params }: Props) {
         room={room}
         initialMessages={messages}
         currentUserId={me.authId}
+        userRole={me.role}
       />
     </div>
   );

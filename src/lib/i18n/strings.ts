@@ -20,6 +20,14 @@ const strings = {
   "chat.image": { en: "Send image", ar: "إرسال صورة" },
   "chat.uploading": { en: "Uploading…", ar: "جاري الرفع…" },
 
+  // Message actions
+  "message.reply": { en: "Reply", ar: "رد" },
+  "message.edit": { en: "Edit", ar: "تعديل" },
+  "message.delete": { en: "Delete", ar: "حذف" },
+  "message.edited": { en: "edited", ar: "تم التعديل" },
+  "message.deleted": { en: "This message was deleted", ar: "تم حذف هذه الرسالة" },
+  "message.replyingTo": { en: "Replying to", ar: "الرد على" },
+
   // Room kinds
   "room.client": { en: "Client Room", ar: "غرفة العميل" },
   "room.internal": { en: "Internal Room", ar: "غرفة داخلية" },

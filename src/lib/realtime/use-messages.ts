@@ -114,20 +114,22 @@ export function useMessages(roomId: string, initial: MessageRow[]) {
   }, [roomId]);
 
   const sendMessage = useCallback(
-    async (body: string) => {
+    async (body: string, replyToId?: string | null) => {
       if (!body.trim() || sending) return;
       setSending(true);
       try {
+        const payload: Record<string, unknown> = { room_id: roomId, body };
+        if (replyToId) payload.reply_to_id = replyToId;
+
         const res = await fetch("/api/messages", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ room_id: roomId, body }),
+          body: JSON.stringify(payload),
         });
         if (!res.ok) {
           const err = await res.json();
           console.error("Send failed:", err);
         }
-        // Realtime subscription will pick up the new message
       } finally {
         setSending(false);
       }
