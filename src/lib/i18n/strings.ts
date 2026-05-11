@@ -138,10 +138,21 @@ const strings = {
   "admin.color": { en: "Color", ar: "اللون" },
   "admin.description": { en: "Description", ar: "الوصف" },
 
+  // Boards
+  "boards.title": { en: "Task Boards", ar: "لوحات المهام" },
+  "boards.create": { en: "New Board", ar: "لوحة جديدة" },
+  "boards.empty": { en: "No boards yet. Create one to get started.", ar: "لا توجد لوحات بعد. أنشئ واحدة للبدء." },
+  "boards.columns": { en: "Columns", ar: "الأعمدة" },
+  "boards.tasks": { en: "Tasks", ar: "المهام" },
+  "boards.addTask": { en: "Add task", ar: "إضافة مهمة" },
+  "boards.taskTitle": { en: "Task title…", ar: "عنوان المهمة…" },
+  "boards.add": { en: "Add", ar: "إضافة" },
+
   // Navigation
   "nav.admin": { en: "Admin", ar: "الإدارة" },
   "nav.tasks": { en: "Tasks", ar: "المهام" },
   "nav.tickets": { en: "Tickets", ar: "التذاكر" },
+  "nav.boards": { en: "Boards", ar: "اللوحات" },
 
   // Language toggle
   "lang.toggle": { en: "عربي", ar: "English" },

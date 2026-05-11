@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CheckSquare, Settings, Ticket } from "lucide-react";
+import { CheckSquare, LayoutDashboard, Settings, Ticket } from "lucide-react";
 import { useLocale } from "@/lib/i18n/locale-context";
 import { cn } from "@/lib/utils";
 import type { RoomListItem } from "@/lib/queries/me";
@@ -84,6 +84,18 @@ export function Sidebar({
         >
           <Ticket className="h-3.5 w-3.5" />
           <span>{t("nav.tickets")}</span>
+        </Link>
+        <Link
+          href="/boards"
+          className={cn(
+            "flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors",
+            pathname.startsWith("/boards")
+              ? "bg-accent font-medium text-accent-foreground"
+              : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+          )}
+        >
+          <LayoutDashboard className="h-3.5 w-3.5" />
+          <span>{t("nav.boards")}</span>
         </Link>
         {isAdmin && (
           <Link
