@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -41,6 +42,18 @@ export async function POST(request: NextRequest) {
       { error: "Failed to send message" },
       { status: 403 },
     );
+  }
+
+  // Parse @mentions and create notifications (fire-and-forget)
+  const mentions = messageBody.match(/@(\w+)/g);
+  if (mentions && mentions.length > 0) {
+    createMentionNotifications(
+      mentions.map((m: string) => m.slice(1).toLowerCase()),
+      user.id,
+      room_id,
+      message.id,
+      messageBody,
+    ).catch((err) => console.error("Mention notification failed:", err));
   }
 
   // Trigger Sanad AI if message contains @sanad (case-insensitive)
@@ -105,4 +118,86 @@ export async function GET(request: NextRequest) {
   const messages = (data ?? []).reverse();
 
   return NextResponse.json({ messages, hasMore: data?.length === limit });
+}
+
+/**
+ * Create notifications for @mentioned users.
+ * Matches mention text against user full_name (first name or full name, case-insensitive).
+ */
+async function createMentionNotifications(
+  mentionNames: string[],
+  senderId: string,
+  roomId: string,
+  messageId: string,
+  messageBody: string,
+) {
+  const adminSupabase = createAdminClient();
+
+  // Get room members
+  const { data: members } = await adminSupabase
+    .from("room_members")
+    .select("user_id, users!inner(id, full_name, is_ai)")
+    .eq("room_id", roomId);
+
+  if (!members) return;
+
+  type MemberRow = {
+    user_id: string;
+    users: { id: string; full_name: string; is_ai: boolean };
+  };
+
+  // Get sender name for notification title
+  const { data: sender } = await adminSupabase
+    .from("users")
+    .select("full_name")
+    .eq("id", senderId)
+    .single();
+
+  const { data: room } = await adminSupabase
+    .from("rooms")
+    .select("name")
+    .eq("id", roomId)
+    .single();
+
+  const senderName = sender?.full_name ?? "Someone";
+  const roomName = room?.name ?? "a room";
+
+  // Match mentions to room members
+  const notifications: Array<{
+    user_id: string;
+    kind: string;
+    title: string;
+    body: string;
+    link: string;
+    metadata: Record<string, unknown>;
+  }> = [];
+
+  for (const member of members as unknown as MemberRow[]) {
+    if (member.users.is_ai || member.user_id === senderId) continue;
+
+    const firstName = member.users.full_name.split(" ")[0].toLowerCase();
+    const fullName = member.users.full_name.toLowerCase().replace(/\s+/g, "");
+
+    const isMentioned = mentionNames.some(
+      (name) => name === firstName || name === fullName,
+    );
+
+    if (isMentioned) {
+      notifications.push({
+        user_id: member.user_id,
+        kind: "mention",
+        title: `${senderName} mentioned you in ${roomName}`,
+        body:
+          messageBody.length > 100
+            ? messageBody.slice(0, 100) + "…"
+            : messageBody,
+        link: `/rooms/${roomId}`,
+        metadata: { message_id: messageId, sender_id: senderId },
+      });
+    }
+  }
+
+  if (notifications.length > 0) {
+    await adminSupabase.from("notifications").insert(notifications);
+  }
 }

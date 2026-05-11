@@ -8,6 +8,7 @@ import type { Me } from "@/lib/queries/me";
 import type { RoomListItem } from "@/lib/queries/me";
 import { useLocale } from "@/lib/i18n/locale-context";
 import { SearchDialog } from "@/components/search/search-dialog";
+import { NotificationBell } from "@/components/app-shell/notification-bell";
 import { cn } from "@/lib/utils";
 
 export function TopBar({
@@ -64,6 +65,7 @@ export function TopBar({
               ⌘K
             </kbd>
           </button>
+          <NotificationBell />
           <button
             onClick={toggleLocale}
             className="rounded-md border border-input bg-background px-2 py-1 text-xs font-medium hover:bg-accent"

@@ -118,6 +118,9 @@ const strings = {
   "notifications.enable": { en: "Enable notifications", ar: "تفعيل الإشعارات" },
   "notifications.description": { en: "Get notified about new messages and updates.", ar: "احصل على إشعارات بالرسائل والتحديثات الجديدة." },
   "notifications.allow": { en: "Allow", ar: "السماح" },
+  "notifications.title": { en: "Notifications", ar: "الإشعارات" },
+  "notifications.markAllRead": { en: "Mark all read", ar: "تحديد الكل كمقروء" },
+  "notifications.empty": { en: "No notifications yet.", ar: "لا توجد إشعارات بعد." },
 
   // Navigation
   "nav.admin": { en: "Admin", ar: "الإدارة" },
