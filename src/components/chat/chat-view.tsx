@@ -5,6 +5,7 @@ import { useMessages } from "@/lib/realtime/use-messages";
 import { useReadTracking } from "@/lib/realtime/use-read-tracking";
 import { MessageBubble } from "./message-bubble";
 import { Composer } from "./composer";
+import { ReadReceipts } from "./read-receipts";
 import { useLocale } from "@/lib/i18n/locale-context";
 import type { MessageRow, RoomDetail } from "@/lib/queries/room";
 
@@ -152,6 +153,10 @@ export function ChatView({ room, initialMessages, currentUserId, userRole = "cli
               );
             })}
           </>
+        )}
+        {/* Read receipts — show under the last message from the current user */}
+        {messages.length > 0 && messages[messages.length - 1].sender_id === currentUserId && (
+          <ReadReceipts roomId={room.id} messageId={messages[messages.length - 1].id} />
         )}
         <div ref={bottomRef} />
       </div>
