@@ -1,5 +1,6 @@
 "use client";
 
+import { FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AiConfirmCard } from "./ai-confirm-card";
 import type { MessageRow } from "@/lib/queries/room";
@@ -9,6 +10,12 @@ type Props = {
   isOwn: boolean;
   showSender: boolean; // false when consecutive messages from same sender
 };
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
 
 function formatTime(iso: string): string {
   const d = new Date(iso);
@@ -113,7 +120,45 @@ export function MessageBubble({ message, isOwn, showSender }: Props) {
                 : "rounded-tl-sm bg-muted text-foreground",
           )}
         >
-          <p className="whitespace-pre-wrap break-words">{message.body}</p>
+          {/* Image attachment */}
+          {message.kind === "image" && typeof message.metadata?.file_url === "string" ? (
+            <a
+              href={message.metadata.file_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block"
+            >
+              <img
+                src={message.metadata.file_url}
+                alt={String(message.metadata.file_name ?? "Image")}
+                className="max-h-64 rounded-lg object-contain"
+                loading="lazy"
+              />
+            </a>
+          ) : null}
+          {/* File attachment (non-image) */}
+          {message.kind === "text" && typeof message.metadata?.file_url === "string" ? (
+            <a
+              href={message.metadata.file_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 rounded-md border bg-background/50 px-3 py-2 text-xs hover:bg-accent/50"
+            >
+              <FileText className="h-4 w-4 text-muted-foreground" />
+              <span className="truncate font-medium">
+                {String(message.metadata.file_name ?? "File")}
+              </span>
+              {typeof message.metadata.file_size === "number" ? (
+                <span className="text-muted-foreground">
+                  {formatFileSize(message.metadata.file_size)}
+                </span>
+              ) : null}
+            </a>
+          ) : null}
+          {/* Text body */}
+          {message.body && (
+            <p className="whitespace-pre-wrap break-words">{message.body}</p>
+          )}
           {hasAction && (
             <AiConfirmCard
               messageId={message.id}

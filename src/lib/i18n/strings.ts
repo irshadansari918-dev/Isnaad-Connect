@@ -16,6 +16,9 @@ const strings = {
   "chat.members": { en: "Members", ar: "الأعضاء" },
   "chat.loading": { en: "Loading messages…", ar: "جاري تحميل الرسائل…" },
   "chat.loadMore": { en: "Load earlier messages", ar: "تحميل رسائل سابقة" },
+  "chat.attach": { en: "Attach file", ar: "إرفاق ملف" },
+  "chat.image": { en: "Send image", ar: "إرسال صورة" },
+  "chat.uploading": { en: "Uploading…", ar: "جاري الرفع…" },
 
   // Room kinds
   "room.client": { en: "Client Room", ar: "غرفة العميل" },
@@ -100,6 +103,11 @@ const strings = {
   "agent.cancelled": { en: "Action cancelled", ar: "تم الإلغاء" },
   "agent.viewTask": { en: "View task", ar: "عرض المهمة" },
   "agent.thinking": { en: "Sanad is thinking…", ar: "سند يفكر…" },
+
+  // Notifications
+  "notifications.enable": { en: "Enable notifications", ar: "تفعيل الإشعارات" },
+  "notifications.description": { en: "Get notified about new messages and updates.", ar: "احصل على إشعارات بالرسائل والتحديثات الجديدة." },
+  "notifications.allow": { en: "Allow", ar: "السماح" },
 
   // Navigation
   "nav.admin": { en: "Admin", ar: "الإدارة" },

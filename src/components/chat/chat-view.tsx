@@ -116,7 +116,7 @@ export function ChatView({ room, initialMessages, currentUserId }: Props) {
       </div>
 
       {/* Composer */}
-      <Composer onSend={sendMessage} sending={sending} />
+      <Composer onSend={sendMessage} sending={sending} roomId={room.id} />
     </div>
   );
 }

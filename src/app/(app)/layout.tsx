@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { TopBar } from "@/components/app-shell/top-bar";
 import { Sidebar } from "@/components/app-shell/sidebar";
+import { NotificationPrompt } from "@/components/app-shell/notification-prompt";
 import { getMe, listMyRooms } from "@/lib/queries/me";
 import { AppProviders } from "@/components/app-shell/providers";
 
@@ -22,6 +23,7 @@ export default async function AppLayout({
           <Sidebar rooms={rooms} isAdmin={me.role === "admin"} />
           <main className="flex-1 overflow-hidden bg-background">{children}</main>
         </div>
+        <NotificationPrompt />
       </div>
     </AppProviders>
   );

@@ -15,6 +15,14 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Isnaad Connect",
   description: "Conversations, tasks, and tickets for Isnaad and its clients.",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Isnaad Connect",
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+  },
 };
 
 export default function RootLayout({
@@ -24,6 +32,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning>
+      <head>
+        <meta name="theme-color" content="#1B2A4A" />
+        <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
