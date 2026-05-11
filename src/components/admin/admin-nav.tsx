@@ -9,6 +9,7 @@ const tabs = [
   { href: "/admin/organizations", key: "admin.organizations" as const },
   { href: "/admin/users", key: "admin.users" as const },
   { href: "/admin/rooms", key: "admin.rooms" as const },
+  { href: "/admin/departments", key: "admin.departments" as const },
 ];
 
 export function AdminNav() {

@@ -130,6 +130,14 @@ const strings = {
   "notifications.markAllRead": { en: "Mark all read", ar: "تحديد الكل كمقروء" },
   "notifications.empty": { en: "No notifications yet.", ar: "لا توجد إشعارات بعد." },
 
+  // Departments
+  "admin.departments": { en: "Departments", ar: "الأقسام" },
+  "admin.deptHead": { en: "Department Head", ar: "رئيس القسم" },
+  "admin.deptRoom": { en: "Room", ar: "الغرفة" },
+  "admin.head": { en: "Head", ar: "رئيس" },
+  "admin.color": { en: "Color", ar: "اللون" },
+  "admin.description": { en: "Description", ar: "الوصف" },
+
   // Navigation
   "nav.admin": { en: "Admin", ar: "الإدارة" },
   "nav.tasks": { en: "Tasks", ar: "المهام" },
