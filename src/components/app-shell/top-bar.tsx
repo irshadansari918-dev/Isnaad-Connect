@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Settings } from "lucide-react";
+import { Menu, X, Settings, CheckSquare, Ticket } from "lucide-react";
 import type { Me } from "@/lib/queries/me";
 import type { RoomListItem } from "@/lib/queries/me";
 import { useLocale } from "@/lib/i18n/locale-context";
@@ -105,8 +105,30 @@ export function TopBar({
                 <p className="px-3 py-4 text-xs text-muted-foreground">{t("app.noRooms")}</p>
               )}
             </nav>
-            {me.role === "admin" && (
-              <div className="border-t px-2 py-2">
+            <div className="border-t px-2 py-2 space-y-0.5">
+              <Link
+                href="/tasks"
+                onClick={() => setMobileOpen(false)}
+                className={cn(
+                  "flex items-center gap-2 rounded-md px-3 py-2 text-sm",
+                  pathname.startsWith("/tasks") ? "bg-accent font-medium" : "text-muted-foreground hover:bg-accent/50",
+                )}
+              >
+                <CheckSquare className="h-3.5 w-3.5" />
+                <span>{t("nav.tasks")}</span>
+              </Link>
+              <Link
+                href="/tickets"
+                onClick={() => setMobileOpen(false)}
+                className={cn(
+                  "flex items-center gap-2 rounded-md px-3 py-2 text-sm",
+                  pathname.startsWith("/tickets") ? "bg-accent font-medium" : "text-muted-foreground hover:bg-accent/50",
+                )}
+              >
+                <Ticket className="h-3.5 w-3.5" />
+                <span>{t("nav.tickets")}</span>
+              </Link>
+              {me.role === "admin" && (
                 <Link
                   href="/admin/organizations"
                   onClick={() => setMobileOpen(false)}
@@ -118,8 +140,8 @@ export function TopBar({
                   <Settings className="h-3.5 w-3.5" />
                   <span>{t("nav.admin")}</span>
                 </Link>
-              </div>
-            )}
+              )}
+            </div>
           </aside>
         </div>
       )}

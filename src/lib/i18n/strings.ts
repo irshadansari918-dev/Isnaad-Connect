@@ -59,8 +59,44 @@ const strings = {
   "admin.noData": { en: "No data yet.", ar: "لا توجد بيانات بعد." },
   "admin.created": { en: "Created", ar: "تم الإنشاء" },
 
+  // Tasks
+  "tasks.title": { en: "Tasks", ar: "المهام" },
+  "tasks.create": { en: "New Task", ar: "مهمة جديدة" },
+  "tasks.assignee": { en: "Assignee", ar: "المسؤول" },
+  "tasks.dueDate": { en: "Due Date", ar: "تاريخ الاستحقاق" },
+  "tasks.filterMine": { en: "My Tasks", ar: "مهامي" },
+  "tasks.filterAll": { en: "All Tasks", ar: "كل المهام" },
+  "tasks.filterOverdue": { en: "Overdue", ar: "متأخرة" },
+  "tasks.open": { en: "Open", ar: "مفتوحة" },
+  "tasks.inProgress": { en: "In Progress", ar: "قيد التنفيذ" },
+  "tasks.done": { en: "Done", ar: "منجزة" },
+  "tasks.cancelled": { en: "Cancelled", ar: "ملغاة" },
+  "tasks.markDone": { en: "Mark Done", ar: "إنجاز" },
+  "tasks.noTasks": { en: "No tasks yet.", ar: "لا توجد مهام بعد." },
+
+  // Tickets
+  "tickets.title": { en: "Tickets", ar: "التذاكر" },
+  "tickets.create": { en: "New Ticket", ar: "تذكرة جديدة" },
+  "tickets.ticketNumber": { en: "Ticket #", ar: "رقم التذكرة" },
+  "tickets.sla": { en: "SLA", ar: "اتفاقية الخدمة" },
+  "tickets.slaHours": { en: "SLA Hours", ar: "ساعات SLA" },
+  "tickets.breached": { en: "Breached", ar: "مخالفة" },
+  "tickets.onTrack": { en: "On Track", ar: "في الموعد" },
+  "tickets.warning": { en: "At Risk", ar: "في خطر" },
+  "tickets.open": { en: "Open", ar: "مفتوحة" },
+  "tickets.inProgress": { en: "In Progress", ar: "قيد التنفيذ" },
+  "tickets.pendingClient": { en: "Pending Client", ar: "بانتظار العميل" },
+  "tickets.resolved": { en: "Resolved", ar: "تم الحل" },
+  "tickets.closed": { en: "Closed", ar: "مغلقة" },
+  "tickets.assignedAm": { en: "Assigned AM", ar: "مدير الحساب" },
+  "tickets.client": { en: "Client", ar: "العميل" },
+  "tickets.description": { en: "Description", ar: "الوصف" },
+  "tickets.noTickets": { en: "No tickets yet.", ar: "لا توجد تذاكر بعد." },
+
   // Navigation
   "nav.admin": { en: "Admin", ar: "الإدارة" },
+  "nav.tasks": { en: "Tasks", ar: "المهام" },
+  "nav.tickets": { en: "Tickets", ar: "التذاكر" },
 
   // Language toggle
   "lang.toggle": { en: "عربي", ar: "English" },

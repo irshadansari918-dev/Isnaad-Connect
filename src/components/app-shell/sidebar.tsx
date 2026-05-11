@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Settings } from "lucide-react";
+import { CheckSquare, Settings, Ticket } from "lucide-react";
 import { useLocale } from "@/lib/i18n/locale-context";
 import { cn } from "@/lib/utils";
 import type { RoomListItem } from "@/lib/queries/me";
@@ -60,8 +60,32 @@ export function Sidebar({
         )}
       </nav>
 
-      {isAdmin && (
-        <div className="border-t px-2 py-2">
+      <div className="border-t px-2 py-2 space-y-0.5">
+        <Link
+          href="/tasks"
+          className={cn(
+            "flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors",
+            pathname.startsWith("/tasks")
+              ? "bg-accent font-medium text-accent-foreground"
+              : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+          )}
+        >
+          <CheckSquare className="h-3.5 w-3.5" />
+          <span>{t("nav.tasks")}</span>
+        </Link>
+        <Link
+          href="/tickets"
+          className={cn(
+            "flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors",
+            pathname.startsWith("/tickets")
+              ? "bg-accent font-medium text-accent-foreground"
+              : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+          )}
+        >
+          <Ticket className="h-3.5 w-3.5" />
+          <span>{t("nav.tickets")}</span>
+        </Link>
+        {isAdmin && (
           <Link
             href="/admin/organizations"
             className={cn(
@@ -74,8 +98,8 @@ export function Sidebar({
             <Settings className="h-3.5 w-3.5" />
             <span>{t("nav.admin")}</span>
           </Link>
-        </div>
-      )}
+        )}
+      </div>
     </aside>
   );
 }
