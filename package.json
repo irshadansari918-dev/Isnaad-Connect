@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "seed": "tsx scripts/seed.ts",
-    "smoke:tenant": "node --env-file=.env.local --import tsx test/tenant-isolation.test.ts"
+    "smoke:tenant": "node --env-file=.env.local --import tsx test/tenant-isolation.test.ts",
+    "smoke:messaging": "node --env-file=.env.local --import tsx test/messaging.test.ts",
+    "smoke:all": "npm run smoke:tenant && npm run smoke:messaging"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",

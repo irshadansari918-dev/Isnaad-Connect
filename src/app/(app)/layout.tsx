@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { TopBar } from "@/components/app-shell/top-bar";
 import { Sidebar } from "@/components/app-shell/sidebar";
 import { getMe, listMyRooms } from "@/lib/queries/me";
+import { AppProviders } from "@/components/app-shell/providers";
 
 export default async function AppLayout({
   children,
@@ -14,12 +15,14 @@ export default async function AppLayout({
   const rooms = await listMyRooms();
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <TopBar me={me} />
-      <div className="flex flex-1">
-        <Sidebar rooms={rooms} />
-        <main className="flex-1 bg-background">{children}</main>
+    <AppProviders>
+      <div className="flex min-h-screen flex-col">
+        <TopBar me={me} />
+        <div className="flex flex-1 overflow-hidden">
+          <Sidebar rooms={rooms} />
+          <main className="flex-1 overflow-hidden bg-background">{children}</main>
+        </div>
       </div>
-    </div>
+    </AppProviders>
   );
 }

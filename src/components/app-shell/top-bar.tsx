@@ -1,6 +1,11 @@
+"use client";
+
 import type { Me } from "@/lib/queries/me";
+import { useLocale } from "@/lib/i18n/locale-context";
 
 export function TopBar({ me }: { me: Me }) {
+  const { t, toggleLocale } = useLocale();
+
   return (
     <header className="flex h-14 items-center justify-between border-b bg-card px-4">
       <div className="flex items-center gap-2">
@@ -8,10 +13,16 @@ export function TopBar({ me }: { me: Me }) {
           I
         </div>
         <span className="text-sm font-semibold tracking-tight">
-          Isnaad Connect
+          {t("app.title")}
         </span>
       </div>
       <div className="flex items-center gap-3">
+        <button
+          onClick={toggleLocale}
+          className="rounded-md border border-input bg-background px-2 py-1 text-xs font-medium hover:bg-accent"
+        >
+          {t("lang.toggle")}
+        </button>
         <div className="hidden text-xs text-muted-foreground sm:flex sm:flex-col sm:items-end">
           <span className="font-medium text-foreground">{me.fullName}</span>
           <span>
@@ -23,7 +34,7 @@ export function TopBar({ me }: { me: Me }) {
             type="submit"
             className="rounded-md border border-input bg-background px-3 py-1.5 text-xs font-medium hover:bg-accent"
           >
-            Sign out
+            {t("app.signOut")}
           </button>
         </form>
       </div>
